@@ -71,7 +71,7 @@ const createBaseManifest = async (): Promise<Manifest> => {
             permissions: [],
             content_scripts: [
                 {
-                    matches: ['<all_urls>'],
+                    matches: ['https://chat.openai.com/*'],
                     js: ['./js/content.js']
                 }
             ],

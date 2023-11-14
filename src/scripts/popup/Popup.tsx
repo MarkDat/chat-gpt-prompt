@@ -12,12 +12,19 @@ const Popup = () => {
         )
     }
 
+    const btnClick = () => {
+        console.log('oke');
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, { message: "popupData", data: {text: 'haha'} });
+        });
+    }
+
     const items: TabsProps['items'] = [
         {
             label: <ItemLabel icon={BookOutlined} title="Tab 1" />,
             key: '1',
-            children: <><Button type="primary" loading>
-            Loading
+            children: <><Button type="primary" onClick={btnClick}>
+            Click me!
             </Button></>
         },
         {

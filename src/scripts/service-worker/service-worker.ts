@@ -14,6 +14,8 @@ chrome.action.onClicked.addListener(() => {
 })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log(message, sender)
+
     const { command } = message
     switch (command) {
         case 'hello-world':

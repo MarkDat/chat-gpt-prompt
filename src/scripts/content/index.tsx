@@ -1,7 +1,7 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import styles from '@/styles/index.css?inline'
-import antdStyle from 'antd/dist/antd.css?inline'
+// import antdStyle from 'antd/dist/antd.css?inline'
 
 import { StyleProvider as AntdStyleProvider } from '@ant-design/cssinjs'
 
@@ -12,7 +12,12 @@ const ROOT_ID = 'RENAME_ME_IF_YOU_WANT'
 
 const injectReact = (rootId: string): void => {
     try {
-        injectStyle();
+        //injectStyle();
+
+        // document.addEventListener("focusin", function (event) {
+        //     console.log('hahaha', event);
+            
+        //   });
 
         const container = document.createElement('div')
         document.body.appendChild(container)
@@ -39,7 +44,7 @@ const injectReact = (rootId: string): void => {
                 <>
                     <AntdStyleProvider container={container}>
                         {isProduction && <style>{styles.toString()}</style>}
-                        <style>{antdStyle.toString()}</style>
+                        {/* <style>{antdStyle.toString()}</style> */}
                         <App />
                     </AntdStyleProvider>
                 </>
@@ -50,12 +55,12 @@ const injectReact = (rootId: string): void => {
     }
 }
 
-const injectStyle = () => {
-    const head = document.head || document.getElementsByTagName('head')[0],
-    style = document.createElement('style');;
-    head.appendChild(style);
+// const injectStyle = () => {
+//     const head = document.head || document.getElementsByTagName('head')[0],
+//     style = document.createElement('style');;
+//     head.insertBefore(style, head.firstChild);
     
-    style.appendChild(document.createTextNode(antdStyle.toString()));
-}
+//     style.appendChild(document.createTextNode(antdStyle.toString()));
+// }
 
 injectReact(ROOT_ID)

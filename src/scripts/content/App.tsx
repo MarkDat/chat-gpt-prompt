@@ -25,6 +25,9 @@ const App = () => {
         setIsOpen(true)
         chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             console.log('Gimme: Message Received', request, sender, sendResponse)
+
+            const textArea = document.getElementById('prompt-textarea') as HTMLTextAreaElement;
+            textArea.value = 'oh my god'
         })
     }, [])
 
@@ -33,10 +36,10 @@ const App = () => {
             {isOpen && (
                 <div className="fixed bottom-0 right-0 p-4">
                     <div className="inline-flex items-center justify-center h-16 rounded-full">
-                        {contextHolder}
+                        {/* {contextHolder}
                         <Button type="primary" onClick={openNotification}>
                             Open the notification box
-                        </Button>
+                        </Button> */}
                     </div>
                 </div>
             )}

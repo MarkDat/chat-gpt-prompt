@@ -1,7 +1,7 @@
 {
-    "name": "chat-gpt-notes",
-    "longName": "Chat GPT Notes",
-    "description": "Chat GPT Notes",
+    "name": "chat-gpt-promts-util",
+    "longName": "Chat GPT Promts Util",
+    "description": "Chat GPT Promts Util",
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
