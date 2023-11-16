@@ -15,7 +15,7 @@
         "build:js": "vite build --config vite.config.content.ts",
         "preview": "vite preview"
     },
-    "author": "Doug Silkstone <doug@withseismic.com>",
+    "author": "Dat Luong <mark.dat.code@gmail.com>",
     "license": "ISC",
     "devDependencies": {
         "@types/chrome": "^0.0.240",

@@ -1,7 +1,7 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import styles from '@/styles/index.css?inline'
-// import antdStyle from 'antd/dist/antd.css?inline'
+import antdStyle from 'antd/dist/antd.css?inline'
 
 import { StyleProvider as AntdStyleProvider } from '@ant-design/cssinjs'
 
@@ -19,12 +19,23 @@ const injectReact = (rootId: string): void => {
             
         //   });
 
-        const container = document.createElement('div')
-        document.body.appendChild(container)
+        const container = document.createElement('div');
+        const formDiv = document.querySelector("form #prompt-textarea").closest('form');
+        if(!formDiv) return;
+
+        // var newDiv = document.createElement('div');
+        // newDiv.id = 'chat-gpt-prompt-until-container';
+
+        formDiv.appendChild(container);
+
+        //document.body.appendChild(container)
 
         if (container) {
             container.id = rootId
-            container.style.position = 'inherit'
+            container.style.width = '50px'
+            container.style.display = 'flex';
+            container.style.alignItems = 'center';
+           // container.style.position = 'absolute'
             container.style.zIndex = '2147483666'
         }
 
@@ -44,8 +55,9 @@ const injectReact = (rootId: string): void => {
                 <>
                     <AntdStyleProvider container={container}>
                         {isProduction && <style>{styles.toString()}</style>}
-                        {/* <style>{antdStyle.toString()}</style> */}
-                        <App />
+                        <style>{antdStyle.toString()}</style>
+                       <div id="chat-gpt-prompt-container" className='fixed'></div>
+                       <App root={container.shadowRoot}/>
                     </AntdStyleProvider>
                 </>
             </React.StrictMode>
@@ -56,9 +68,9 @@ const injectReact = (rootId: string): void => {
 }
 
 // const injectStyle = () => {
-//     const head = document.head || document.getElementsByTagName('head')[0],
-//     style = document.createElement('style');;
-//     head.insertBefore(style, head.firstChild);
+//     const component = document.getElementById('chatgpt-prompt-util'),
+//     style = document.createElement('style');
+//     component.insertAdjacentElement('beforebegin',style);
     
 //     style.appendChild(document.createTextNode(antdStyle.toString()));
 // }

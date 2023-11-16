@@ -1,6 +1,7 @@
 import { Button, Radio, Tabs, TabsProps } from 'antd'
 import { AndroidOutlined, BookOutlined } from '@ant-design/icons'
 import React, { useMemo } from 'react'
+import { sendMessageToContentScript } from '@/utils/browser'
 
 const Popup = () => {
     const ItemLabel: React.FC<{ icon: any; title: string }> = ({ icon: ItemIcon, title }) => {
@@ -14,9 +15,10 @@ const Popup = () => {
 
     const btnClick = () => {
         console.log('oke');
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, { message: "popupData", data: {text: 'haha'} });
-        });
+        // chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        //     chrome.tabs.sendMessage(tabs[0].id, { message: "popupData", data: {text: 'haha'} });
+        // });
+        sendMessageToContentScript( { message: "popupData", data: {text: 'muahaahah'} });
     }
 
     const items: TabsProps['items'] = [
@@ -36,7 +38,7 @@ const Popup = () => {
 
     return (
         <div>
-            <Tabs defaultActiveKey="2" items={items} />
+            <Tabs defaultActiveKey="1" items={items} />
         </div>
     )
 }
