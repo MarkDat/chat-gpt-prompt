@@ -37,6 +37,9 @@ const injectReact = (rootId: string): void => {
             container.style.alignItems = 'center';
            // container.style.position = 'absolute'
             container.style.zIndex = '2147483666'
+            container.style.flexDirection = 'column';
+            container.style.justifyContent = 'end';
+            container.style.marginBottom = '7px'
         }
 
         if (isProduction) {
@@ -54,8 +57,8 @@ const injectReact = (rootId: string): void => {
             <React.StrictMode>
                 <>
                     <AntdStyleProvider container={container}>
-                        {isProduction && <style>{styles.toString()}</style>}
                         <style>{antdStyle.toString()}</style>
+                        <style>{styles.toString()}</style>
                        <div id="chat-gpt-prompt-container" className='fixed'></div>
                        <App root={container.shadowRoot}/>
                     </AntdStyleProvider>
