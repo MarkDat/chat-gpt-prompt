@@ -1,52 +1,69 @@
 import { FileTextOutlined } from '@ant-design/icons'
-import { Alert, Button, Layout, List, Menu, MenuProps, Popover, Space, notification } from 'antd'
-import Sider from 'antd/lib/layout/Sider'
-import { Content, Header } from 'antd/lib/layout/layout'
-import React, { useEffect, useState } from 'react'
+import { DndContext, KeyboardSensor, MouseSensor, PointerActivationConstraint, PointerSensor, TouchSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
+import { SortableContext, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
+import { Button, Layout, Menu, MenuProps, Popover, notification } from 'antd'
+import React, { useEffect, useReducer, useState } from 'react'
+import { SortableItem } from './SortableItem'
+import { contentReducer } from './reducers/contentReducer'
+import { deleteItem, movePosition, updateItems } from './reducers/action'
 
-type MenuItem = Required<MenuProps>['items'][number];
+type MenuItem = Required<MenuProps>['items'][number]
 interface IProps {
     root: ShadowRoot
 }
 const App = (prop: IProps) => {
-    const data = [
-        {
-            title: 'Ant Design Title 1'
+
+    const [items, dispatch] = useReducer(
+        contentReducer,
+        [{
+            id: 1,
+            content: 'line 1'
+        }, {
+            id: 2,
+            content: 'line 2'
+        }, {
+            id: 3,
+            content: 'line 3'
         },
         {
-            title: 'Ant Design Title 2'
+            id: 4,
+            content: 'line 3'
         },
         {
-            title: 'Ant Design Title 3'
+            id: 5,
+            content: 'line 3'
+        },{
+            id: 6,
+            content: 'line 3'
         },
         {
-            title: 'Ant Design Title 4'
+            id: 7,
+            content: 'line 3'
         },
         {
-            title: 'Ant Design Title 4'
+            id: 8,
+            content: 'line 3'
         },
         {
-            title: 'Ant Design Title 4'
-        },
-        {
-            title: 'Ant Design Title 4'
-        },
-        {
-            title: 'Ant Design Title 4'
-        },
-        {
-            title: 'Ant Design Title 4'
-        },
-        {
-            title: 'Ant Design Title 4'
-        }
-    ]
-    
+            id: 9,
+            content: 'line 3'
+        }]
+    );
+
+    const sensors = useSensors(
+        useSensor(MouseSensor, {
+            activationConstraint: {delay: 100} as PointerActivationConstraint,
+        }),
+        useSensor(TouchSensor, {
+            activationConstraint: {delay: 100} as PointerActivationConstraint,
+        })
+    )
+
     const menuItems: MenuItem[] = [
-        {key: '1', label: 'Triết gia'},
-        {key: '2', label: 'Code'},
-        {key: '3', label: 'Giáo dục'}
-    ];  
+        { key: '1', label: 'Triết gia ba lo te' },
+        { key: '2', label: 'Code' },
+        { key: '3', label: 'Giáo dục' }
+    ]
 
     const [isOpen, setIsOpen] = useState(false)
     const [api, contextHolder] = notification.useNotification()
@@ -83,46 +100,56 @@ const App = (prop: IProps) => {
 
     const text = <span>Prompt list</span>
 
+    function handleDragEnd(event) {
+        const {active, over} = event;
+        
+        if (active.id !== over.id) {
+            dispatch(movePosition({
+                activeId: active.id,
+                overId: over.id
+            }));
+        }
+      }
+
+    const onItemValueChanged = (id, newContent) => {
+        dispatch(updateItems({ id, newContent}));
+    }
+
+    const onItemDeleted = (id) => {
+        dispatch(deleteItem({ id }));
+    }
+
     const contentPopover = () => {
         return (
             <>
-                <div className="w-[40rem] h-[35rem] overflow-hidden">
-                    <Space
-                        direction="vertical"
-                        style={{ width: '100%', height: '100%' }}
-                        size={[0, 48]}
-                    >
-                        <Layout className='flex flex-row h-[35rem] bg-transparent gap-2.5'>
-                            <Layout className='grow-0 shrink-0 basis-40	overflow-auto bg-transparent'>
-                                <Menu
-                                    className='h-full'
-                                    mode="inline"
-                                    defaultActiveFirst={true}
-                                    defaultSelectedKeys={['1']}
-                                    defaultOpenKeys={['1']}
-                                    onSelect={(e) => console.log(e)}
-                                    items={menuItems}
-                                />
-                            </Layout>
-                            <Layout className='bg-transparent'> 
-                                <List
-                                    className='overflow-auto'
-                                    itemLayout="horizontal"
-                                    dataSource={data}
-                                    renderItem={(item, index) => (
-                                        <List.Item className='cursor-pointer'>
-                                            <List.Item.Meta
-                                                title={
-                                                    <a href="https://ant.design">{item.title}</a>
-                                                }
-                                                description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-                                            />
-                                        </List.Item>
-                                    )}
-                                />
-                            </Layout>
+                <div className="w-[40rem] h-[30rem] overflow-hidden">
+                    <Layout className="flex flex-row h-[35rem] bg-transparent gap-2.5 h-[inherit]">
+                        <Layout className="grow-0 shrink-0 basis-40	overflow-y-auto bg-transparent">
+                            <Button type="dashed">Tạo nhóm</Button>
+                            <Menu
+                                className="h-full"
+                                mode="inline"
+                                defaultActiveFirst={true}
+                                defaultSelectedKeys={['1']}
+                                defaultOpenKeys={['1']}
+                                onSelect={e => console.log(e)}
+                                items={menuItems}
+                            />
                         </Layout>
-                    </Space>
+                        <Layout className="bg-transparent overflow-y-auto overflow-x-hidden pr-1.5">
+                            <DndContext
+                                sensors={sensors}
+                                collisionDetection={closestCenter}
+                                onDragEnd={handleDragEnd} 
+                            >
+                                <SortableContext items={items} >
+                                    {items.map(item => (
+                                        <SortableItem key={item.id} item={item} onItemValueChanged={onItemValueChanged} onItemDeleted={onItemDeleted}/>
+                                    ))}
+                                </SortableContext>
+                            </DndContext>
+                        </Layout>
+                    </Layout>
                 </div>
             </>
         )
@@ -137,28 +164,6 @@ const App = (prop: IProps) => {
 
     return (
         <>
-            {/* className="fixed bottom-0 right-0 p-4" */}
-            {/* {isOpen && (
-                <div
-                    id="chatgpt-prompt-util"
-                    className="relative" // box-content	overflow-hidden	pointer-events-none	
-                    style={{
-                        width: textAreaElementSize.width,
-                        height: textAreaElementSize.height
-                    }}
-                >
-                    <Popover
-                        placement="topRight"
-                        title={text}
-                        content={content}
-                        getPopupContainer={getPopupContainer}
-                    >
-                        <div className="absolute bg-red-500">
-                            <Button onClick={() => console.log('haha')}>TR</Button>
-                        </div>
-                    </Popover>
-                </div>
-            )} */}
             <div id="chatgpt-prompt-util">
                 <Popover
                     placement="topRight"

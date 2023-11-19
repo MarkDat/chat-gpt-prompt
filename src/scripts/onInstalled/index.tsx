@@ -15,7 +15,5 @@ const container = document.getElementById('onInstalled')
 const root = createRoot(container!)
 
 root.render(
-    <React.StrictMode>
-        <OnInstalled />
-    </React.StrictMode>
+    <OnInstalled />
 )

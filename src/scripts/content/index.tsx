@@ -54,16 +54,14 @@ const injectReact = (rootId: string): void => {
         const root = createRoot(target!)
 
         root.render(
-            <React.StrictMode>
-                <>
-                    <AntdStyleProvider container={container}>
-                        <style>{antdStyle.toString()}</style>
-                        <style>{styles.toString()}</style>
-                       <div id="chat-gpt-prompt-container" className='fixed'></div>
-                       <App root={container.shadowRoot}/>
-                    </AntdStyleProvider>
-                </>
-            </React.StrictMode>
+            <>
+            <AntdStyleProvider container={container}>
+                <style>{antdStyle.toString()}</style>
+                <style>{styles.toString()}</style>
+               <div id="chat-gpt-prompt-container" className='fixed'></div>
+               <App root={container.shadowRoot}/>
+            </AntdStyleProvider>
+        </>
         )
     } catch (error) {
         console.error('Error Injecting React', error)
