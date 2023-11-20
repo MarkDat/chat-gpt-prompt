@@ -57,5 +57,10 @@ export default {
           }
         }
       },
+    variants: {
+      extend: {
+        
+      },
+    },
     plugins: []
 }

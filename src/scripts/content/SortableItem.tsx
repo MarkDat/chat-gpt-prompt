@@ -1,20 +1,22 @@
 import {
-  DeleteTwoTone,
-  EditTwoTone,
-  SaveTwoTone
+    DeleteTwoTone,
+    EditTwoTone
 } from '@ant-design/icons'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import TextArea from 'antd/lib/input/TextArea'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export function SortableItem(props) {
     const [isEditing, setIsEditting] = useState(false)
-    const { item } = props
-    const { attributes, listeners, setNodeRef, transform, transition, data } = useSortable({
-        id: item.id
+    const { item, isGroup } = props
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging, node } = useSortable({
+        id: item.id,
+        disabled: isEditing
     })
     const [contentTmp, setContentTmp] = useState(item.content)
+    const normalCss = "prompt-card rounded mb-1.5 border p-1 bg-white ";
+    const currentCss = 'prompt-card rounded mb-1.5 p-1 bg-cyan-100 border border-cyan-400 '
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -24,41 +26,29 @@ export function SortableItem(props) {
     const actionComponent = () => {
         return (
             <>
-                {isEditing ? (
-                    <>
-                        <div
-                            className="cursor-grab z-50 text-xl mr-2 mt-1"
-                            onClick={() => {
-                                props.onItemValueChanged(item.id, contentTmp)
-                                setIsEditting(false)
-                            }}
-                        >
-                            <SaveTwoTone />
-                        </div>
-                    </>
-                ) : (
-                    <>
+                {!isEditing ? <>
                         <div className="cursor-grab text-base" onClick={() => setIsEditting(true)}>
                             <EditTwoTone />
                         </div>
                         <div className="cursor-grab text-base" onClick={() => props.onItemDeleted(item.id)}>
                             <DeleteTwoTone twoToneColor={'red'} />
                         </div>
-                    </>
-                )}
+                    </> : <></>}
             </>
         )
     }
 
     return (
         <>
-            <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-                <div className="action flex relative justify-end h-0 mr-1 gap-1">
+            <div ref={setNodeRef} style={style} {...attributes} {...listeners} className='group'>
+                <div className="action relative justify-end h-0 mr-1 gap-1 hidden group-hover:flex">
                     {actionComponent()}
                 </div>
                 <div
-                    className="min-h-[50px] rounded mb-1.5 border p-1 bg-white"
-                    onClick={() => console.log('tumlum')}
+                    className={(!item.current ? normalCss : currentCss) + (isDragging ? 'bg-cyan-50 ' : ' ') + (isGroup ? 'min-h-[50px]' : 'min-h-[70px]')}
+                    onClick={() => {
+                        props.onItemClicked(item.id)
+                    }}
                 >
                     {isEditing ? (
                         <TextArea
@@ -67,7 +57,12 @@ export function SortableItem(props) {
                             value={contentTmp}
                             placeholder="Nhập nội dung"
                             onChange={e => setContentTmp(e.target.value)}
-                            style={{ height: 120, resize: 'none' }}
+                            style={{ height: 150, resize: 'none' }}
+                            autoFocus={true}
+                            onBlur={() => {
+                                props.onItemValueChanged(item.id, contentTmp)
+                                setIsEditting(false)
+                            }}
                         />
                     ) : (
                         item.content

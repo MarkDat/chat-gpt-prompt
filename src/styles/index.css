@@ -15,12 +15,13 @@
 /* Handle */
 ::-webkit-scrollbar-thumb {
     background: #888;
-    border-radius: 5px;
+    border-radius: 2px;
 }
  
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
+    border-radius: 5px;
 }
 
 .ant-list-split .ant-list-item {
